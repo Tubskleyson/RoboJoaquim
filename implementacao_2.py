@@ -1,6 +1,7 @@
 from graphics import *
 from time import *
 from button import *
+from joaquim import *
 
 class Balcao:
     def __init__(self,Win,l,h,c):
@@ -252,9 +253,10 @@ class Robot:
 
 
 class Mesas:
-    def __init__(self,win):        
+    def __init__(self,win,jojo):
         self.win=win
         self.mesas=[]
+        self.robo = jojo
     def desenha_mesas(self):
 
 
@@ -263,6 +265,7 @@ class Mesas:
         for j in range(18,83,32):
             for k in range(42,94,17):
                 self.mesas += [Button(self.win,Point(j,k),10,10,str(i+1),'cyan')]
+                self.robo.coliders += [[(j,k),(10,10)]]
                 self.mesas[-1].activate()
                 i+=1
 
@@ -274,22 +277,23 @@ class Mesas:
        for i in self.mesas:
            if i.clicked(pt):
                return i.getCenter()
+
 def main_2():
     Win=GraphWin('Robo',600,600)
     Win.setCoords(0,0,100,100)
 
     bancada=Balcao(Win,40,10,Point (21,11))
-    mesa=Mesas(Win)
+
 
     docstation = Robot(Win, 6, Point(97, 3), bancada)
     docstation.Robot.setFill('green')
 
-    robo = Robot(Win, 6, Point(18, 3),bancada)
+    jojo = Joaquim(Win, 6, Point(18, 3))
 
-    carga = Robot(Win, 1, Point(18, 3),bancada)
-    carga.Robot.setFill('green')
+    jojo.coliders += [[(21,11),(40,10)]]
 
-    robo.luzinha = carga
+    mesa = Mesas(Win, jojo)
+
 
 
 
@@ -297,9 +301,9 @@ def main_2():
     while True:
         pt=Win.getMouse()
         if mesa.pedido(pt):
-            robo.move(mesa.pedido(pt))
+            jojo.move(mesa.pedido(pt))
             sleep(3)
-            robo.move(mesa.pedido(pt))
+            jojo.move(mesa.pedido(pt))
         if mesa.sair.clicked(pt):
             break
     Win.getMouse()
